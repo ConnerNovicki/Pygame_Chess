@@ -22,6 +22,9 @@ class Game:
         self.curr_poss_moves = []
         self.all_poss_moves = self.get_all_poss_moves()
 
+        self.white_pieces_taken_images = []
+        self.black_pieces_taken_images = []
+
         self.play_game()
 
     def play_game(self):
@@ -181,9 +184,12 @@ class Game:
         return self.all_poss_moves[self.curr_selected_piece.position]
 
     def move_piece(self, piece, new_position):
-        """Moves piece to new position"""
+        """Moves piece to new position and updates pieces taken"""
         # NOTE: This just moves piece, does not check if move is valid
-        self.chess_board.move_piece(piece, new_position)
+        # Checks if piece is taken
+        piece_captured = self.chess_board.move_piece(piece, new_position)
+        if piece_captured:
+            self.piece_was_captured(piece_captured)
 
     def change_curr_player(self):
         """Change current player between 'w' and 'b'"""
@@ -198,6 +204,13 @@ class Game:
         """Deselects current piece"""
         self.curr_selected_piece = None
         self.curr_poss_moves = None
+
+    def piece_was_captured(self, piece):
+        """Updates list of pieces taken to display on side menu"""
+        if piece.color == 'w':
+            self.white_pieces_taken_images.append(piece.image)
+        else:
+            self.black_pieces_taken_images.append(piece.image)
 
     def message_display(self, text, point, fontsize=90):
         """Displays message in window"""

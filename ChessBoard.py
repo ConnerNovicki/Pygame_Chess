@@ -73,13 +73,19 @@ class ChessBoard:
         return pieces
 
     def move_piece(self, piece, new_position):
-        """Moves piece to new position AND changes has_moved to TRUE"""
+        """Moves piece to new position AND changes has_moved to TRUE
+        Returns piece if piece taken, none if not"""
         pos = piece.position
+        piece_to_take = self.board[new_position[0]][new_position[1]]
         piece.move(new_position)
         self.board[new_position[0]][new_position[1]] = piece
         self.board[pos[0]][pos[1]] = None
         if not piece.has_moved:
             piece.has_moved = True
+
+        if piece_to_take:
+            return piece_to_take
+        return None
 
     def non_permanent_move(self, piece, new_position):
         """Moves piece and does NOT change has_moved to true. Used to check for checks/checkmates"""
