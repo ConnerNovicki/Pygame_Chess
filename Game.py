@@ -9,7 +9,7 @@ from ChessBoard import ChessBoard
 class Game:
     def __init__(self):
         pygame.init()
-        self.game_display = pygame.display.set_mode((1000, 650))
+        self.game_display = pygame.display.set_mode((900, 650))
         pygame.display.set_caption('Chess')
 
         self.settings = {'board_image': 'images/orange_board.png'}
@@ -28,7 +28,7 @@ class Game:
         self.play_game()
 
     def play_game(self):
-
+        """Loop that executes the game"""
         while True:
 
             # Draw whole window (and draw board)
@@ -48,21 +48,42 @@ class Game:
     def draw_window(self):
         """Draws everything in the window"""
         self.game_display.fill(white)
-        # Draw side menus
+        # Draw side menu
+        self.draw_side_menu()
         # Draw bottom menu
         # Draw board
         self.draw_board()
         pygame.display.update()
 
+    def draw_side_menu(self):
+        """Draws right side menu"""
+        pygame.draw.rect(self.game_display, black, Rect((650, 100), (200, 400)), 5)
+        self.message_display('Black', (750, 50), fontsize=30)
+        self.message_display('White', (750, 550), fontsize=30)
+
+        # Display all black pieces taken
+        for i, image in enumerate(self.black_pieces_taken_images):
+            image = pygame.image.load(image)
+            image = pygame.transform.scale(image, (30, 30))
+            pos = 610 + i * 20, 5
+            self.game_display.blit(image, pos)
+
+        # Display all white pieces taken
+        for i, image in enumerate(self.white_pieces_taken_images):
+            image = pygame.image.load(image)
+            image = pygame.transform.scale(image, (30, 30))
+            pos = 610 + i * 20, 595
+            self.game_display.blit(image, pos)
+
     def draw_board(self):
         """Draw chess board and all pieces on the board"""
         # Draw chess board
-        self.game_display.blit(self.board_image, (200, 0))
+        self.game_display.blit(self.board_image, (0, 0))
 
         # Draw pieces on board
         for piece in self.chess_board.get_all_pieces():
             image_position = piece.position
-            image_position = 200 + image_position[0] * 75, (7 - image_position[1]) * 75
+            image_position = image_position[0] * 75, (7 - image_position[1]) * 75
             piece_image = pygame.image.load(piece.image)
             self.game_display.blit(piece_image, image_position)
 
@@ -84,11 +105,8 @@ class Game:
         # On bottom menu
         if y > 600:
             pass
-        # On left side menu
-        elif x < 200:
-            pass
         # On right side menu
-        elif x > 800:
+        elif x > 600:
             pass
         # If on board:
         else:
@@ -137,9 +155,9 @@ class Game:
                             checkmate = False
                     if checkmate:
                         self.draw_window()
-                        self.message_display('Checkmate!', (500, 300))
+                        self.message_display('Checkmate!', (400, 300))
                         winner = 'White' if self.chess_board.curr_player == 'b' else 'Black'
-                        self.message_display('%s wins!' % winner, (500, 400))
+                        self.message_display('%s wins!' % winner, (400, 400))
                         pygame.display.update()
                         time.sleep(2)
                         quit()
@@ -157,11 +175,11 @@ class Game:
     def convert_coordinates_to_space(self, x, y):
         """Converts (x, y) coordinates to corresponding space on board"""
         # NOTE: Board is drawn upside down, so y axis is flipped
-        return (x - 200) // 75, 7 - y // 75
+        return x // 75, 7 - y // 75
 
     def convert_space_to_coordinates(self, position):
         """Returns the top left corner coordinate corresponding to given chess spot"""
-        return position[0] * 75 + 200, (7 - position[1]) * 75
+        return position[0] * 75, (7 - position[1]) * 75
 
     def is_piece_of_curr_player(self, space):
         """Returns if space holds a piece of current player"""
