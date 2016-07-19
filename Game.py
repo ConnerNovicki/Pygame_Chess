@@ -61,16 +61,20 @@ class Game:
 
         # Draw box around current player
         if self.chess_board.curr_player == 'b':
-            pygame.draw.rect(self.game_display, blue, Rect((700, 25), (100, 50)))
+            pygame.draw.rect(self.game_display, blue, Rect((700, 25), (100, 50)), 5)
         else:
-            pygame.draw.rect(self.game_display, blue, Rect((700, 525), (100, 50)))
+            pygame.draw.rect(self.game_display, blue, Rect((700, 525), (100, 50)), 5)
 
         self.message_display('Black', (750, 50), fontsize=30)
         self.message_display('White', (750, 550), fontsize=30)
 
         # Display all moves played
-        for i, move in enumerate(self.get_all_played_moves()):
+        start = 0
+        if len(self.get_all_played_moves()) > 10:
+            start = len(self.get_all_played_moves()) - 10
+        for i, move in enumerate(self.get_all_played_moves()[start:]):
             self.message_display(move, (740, 125 + (i * 30)), fontsize=20)
+            start += 1
 
         # Display all black pieces taken
         for i, image in enumerate(self.black_pieces_taken_images):
