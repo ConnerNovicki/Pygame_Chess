@@ -58,8 +58,19 @@ class Game:
     def draw_side_menu(self):
         """Draws right side menu"""
         pygame.draw.rect(self.game_display, black, Rect((650, 100), (200, 400)), 5)
+
+        # Draw box around current player
+        if self.chess_board.curr_player == 'b':
+            pygame.draw.rect(self.game_display, blue, Rect((700, 25), (100, 50)))
+        else:
+            pygame.draw.rect(self.game_display, blue, Rect((700, 525), (100, 50)))
+
         self.message_display('Black', (750, 50), fontsize=30)
         self.message_display('White', (750, 550), fontsize=30)
+
+        # Display all moves played
+        for i, move in enumerate(self.get_all_played_moves()):
+            self.message_display(move, (740, 125 + (i * 30)), fontsize=20)
 
         # Display all black pieces taken
         for i, image in enumerate(self.black_pieces_taken_images):
@@ -133,11 +144,14 @@ class Game:
                     # Check if selected space is king and in poss_castle_move
                     if self.curr_selected_piece.name == 'King' and selected_space in self.chess_board.get_castle_moves_for_curr_player():
                             # Castle that king
+                            self.add_move(self.curr_selected_piece.position, selected_space)
                             self.chess_board.castle_king(self.curr_selected_piece, selected_space)
 
                     else:
                         # Move selected piece to this spot
+                        self.add_move(self.curr_selected_piece.position, selected_space)
                         self.move_piece(self.curr_selected_piece, selected_space)
+
                         if self.curr_selected_piece.name == 'Pawn' and selected_space[1] == 0 or selected_space[1] == 7:
                             self.chess_board.board[selected_space[0]][selected_space[1]] = None
                             self.chess_board.board[selected_space[0]][selected_space[1]] = Queen(self.chess_board.curr_player, selected_space)
@@ -201,6 +215,9 @@ class Game:
         """Returns possible moves corresponding to cuurently selected piece"""
         return self.all_poss_moves[self.curr_selected_piece.position]
 
+    def get_all_played_moves(self):
+        return self.chess_board.played_moves
+
     def move_piece(self, piece, new_position):
         """Moves piece to new position and updates pieces taken"""
         # NOTE: This just moves piece, does not check if move is valid
@@ -222,6 +239,17 @@ class Game:
         """Deselects current piece"""
         self.curr_selected_piece = None
         self.curr_poss_moves = None
+
+    def add_move(self, pos_1, pos_2):
+        """Add move to list of played moves"""
+        name = self.chess_board.curr_player.upper() + ':     '
+        move = name + self.convert_coordinate_to_space_name(pos_1) + ' -> ' + self.convert_coordinate_to_space_name(pos_2)
+        self.chess_board.played_moves.append(move)
+
+    def convert_coordinate_to_space_name(self, coordinate):
+        """Returns converted name of position (ex: (1,3) -> 'B3')"""
+        conversions = {0 : 'A', 1: 'B', 2: 'C', 3: 'D', 4: 'E', 5: 'F', 6: 'G', 7: 'H'}
+        return str(conversions[coordinate[0]]) + str(coordinate[1] + 1)
 
     def piece_was_captured(self, piece):
         """Updates list of pieces taken to display on side menu"""

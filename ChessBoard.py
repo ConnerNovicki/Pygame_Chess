@@ -34,6 +34,8 @@ class ChessBoard:
 
         self.curr_player = 'w'
 
+        self.played_moves = []
+
     def get_all_pieces(self):
         """Returns list of all pieces on board"""
         pieces = []
@@ -126,7 +128,7 @@ class ChessBoard:
         """Given king piece and one of the four king positions that can make a castle. Moves king to that position and
         moves corresponding rook as well"""
         # NEW_KING_POS = (2, 0), (6, 0), (2, 7), (6, 7)
-        corresponding_rook = {(2, 0): (1, 0), (6, 0): (7, 0), (2, 7): (1, 7), (6, 7): (7, 7)}
+        corresponding_rook = {(2, 0): (0, 0), (6, 0): (7, 0), (2, 7): (0, 7), (6, 7): (7, 7)}
         corresponding_rook_move = {(2, 0): (3, 0), (6, 0): (5, 0), (2, 7): (3, 7), (6, 7): (5, 7)}
         rook_pos = corresponding_rook[new_king_position]
         rook = self.board[rook_pos[0]][rook_pos[1]]
@@ -137,7 +139,7 @@ class ChessBoard:
         """Given king piece and one of the four king positions that can make a castle. Moves king to that position and
         moves corresponding rook as well. DOES NOT change piece has_moved"""
         # NEW_KING_POS = (2, 0), (6, 0), (2, 7), (6, 7)
-        corresponding_rook = {(2, 0): (1, 0), (6, 0): (7, 0), (2, 7): (1, 7), (6, 7): (7, 7)}
+        corresponding_rook = {(2, 0): (0, 0), (6, 0): (7, 0), (2, 7): (0, 7), (6, 7): (7, 7)}
         corresponding_rook_move = {(2, 0): (3, 0), (6, 0): (5, 0), (2, 7): (3, 7), (6, 7): (5, 7)}
         rook_pos = corresponding_rook[new_king_position]
         rook = self.board[rook_pos[0]][rook_pos[1]]
