@@ -216,4 +216,3 @@ class ChessBoard:
             self.board[move[0]][move[1]] = piece_at_move_pos
 
         return poss_moves
-
